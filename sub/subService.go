@@ -285,7 +285,7 @@ func (s *SubService) genVlessLink(inbound *model.Inbound, email string, expiryTi
 		}
 	}
 	uuid := clients[clientIndex].ID
-	port := inbound.Port
+	port := "443"
 	streamNetwork := stream["network"].(string)
 	params := make(map[string]string)
 	params["type"] = streamNetwork
@@ -333,6 +333,19 @@ func (s *SubService) genVlessLink(inbound *model.Inbound, email string, expiryTi
 
 	security, _ := stream["security"].(string)
 	var domains []interface{}
+
+	if security == "none" {
+		params["security"] = "tls"
+		params["alpn"] = "h2,http/1.1"
+		params["sni"], _ = "snappfood.ir"
+		params["fp"], _ = "safari"
+		params["allowInsecure"] = "1"
+		serverName, _ := "arvancloud.ir"
+		if serverName != "" {
+			address = serverName
+		}
+	}
+	
 	if security == "tls" {
 		params["security"] = "tls"
 		tlsSetting, _ := stream["tlsSettings"].(map[string]interface{})
@@ -371,7 +384,7 @@ func (s *SubService) genVlessLink(inbound *model.Inbound, email string, expiryTi
 			address = serverName
 		}
 	}
-
+	
 	if security == "reality" {
 		params["security"] = "reality"
 		realitySetting, _ := stream["realitySettings"].(map[string]interface{})
@@ -445,10 +458,6 @@ func (s *SubService) genVlessLink(inbound *model.Inbound, email string, expiryTi
 		if serverName != "" {
 			address = serverName
 		}
-	}
-
-	if security != "tls" && security != "reality" && security != "xtls" {
-		params["security"] = "none"
 	}
 
 	link := fmt.Sprintf("vless://%s@%s:%d", uuid, address, port)
