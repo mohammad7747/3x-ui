@@ -334,18 +334,6 @@ func (s *SubService) genVlessLink(inbound *model.Inbound, email string, expiryTi
 	security, _ := stream["security"].(string)
 	var domains []interface{}
 
-	if security == "none" {
-		params["security"] = "tls"
-		params["alpn"] = "h2,http/1.1"
-		params["sni"], _ = "snappfood.ir"
-		params["fp"], _ = "safari"
-		params["allowInsecure"] = "1"
-		serverName, _ := "arvancloud.ir"
-		if serverName != "" {
-			address = serverName
-		}
-	}
-	
 	if security == "tls" {
 		params["security"] = "tls"
 		tlsSetting, _ := stream["tlsSettings"].(map[string]interface{})
@@ -455,6 +443,18 @@ func (s *SubService) genVlessLink(inbound *model.Inbound, email string, expiryTi
 		}
 
 		serverName, _ := xtlsSetting["serverName"].(string)
+		if serverName != "" {
+			address = serverName
+		}
+	}
+
+	if security != "tls" && security != "reality" && security != "xtls" {
+		params["security"] = "tls"
+		params["alpn"] = "h2,http/1.1"
+		params["sni"] = "snappfood.ir"
+		params["fp"] = "safari"
+		params["allowInsecure"] = "1"
+		serverName := "arvancloud.ir"
 		if serverName != "" {
 			address = serverName
 		}
