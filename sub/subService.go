@@ -285,7 +285,7 @@ func (s *SubService) genVlessLink(inbound *model.Inbound, email string, expiryTi
 		}
 	}
 	uuid := clients[clientIndex].ID
-	port := "443"
+	port := 443
 	streamNetwork := stream["network"].(string)
 	params := make(map[string]string)
 	params["type"] = streamNetwork
